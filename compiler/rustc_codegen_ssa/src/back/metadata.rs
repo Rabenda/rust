@@ -128,6 +128,7 @@ pub(crate) fn create_object_file(sess: &Session) -> Option<write::Object<'static
         "msp430" => Architecture::Msp430,
         "hexagon" => Architecture::Hexagon,
         "bpf" => Architecture::Bpf,
+        "loongarch64" => Architecture::LoongArch64,
         // Unsupported architecture.
         _ => return None,
     };
@@ -189,6 +190,11 @@ pub(crate) fn create_object_file(sess: &Session) -> Option<write::Object<'static
             } else {
                 e_flags |= elf::EF_RISCV_FLOAT_ABI_SOFT;
             }
+            e_flags
+        }
+        Architecture::LoongArch64 => {
+            // copied from `loongarch64-linux-gnu-gcc foo.c -c`
+            let e_flags = elf::EF_LARCH_OBJABI_V1 | elf::EF_LARCH_ABI_DOUBLE_FLOAT;
             e_flags
         }
         _ => 0,
